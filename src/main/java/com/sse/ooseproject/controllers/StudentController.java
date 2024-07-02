@@ -27,7 +27,7 @@ public class StudentController {
         this.studentRepository = studentRepository;
         this.instituteRepository = instituteRepository;
         this.studentValidator = studentValidator;
-    }
+
 
     @GetMapping("/students")
     public String students(Model model,
@@ -109,4 +109,5 @@ public class StudentController {
         return setupStudentForm(null, model, "new");
         //return "redirect:/students";
     }
+
 }
