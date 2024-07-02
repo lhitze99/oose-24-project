@@ -4,9 +4,11 @@ import com.sse.ooseproject.StudentRepository;
 import com.sse.ooseproject.models.Student;
 import com.sse.ooseproject.models.Institute;
 import com.sse.ooseproject.InstituteRepository;
+import com.sse.ooseproject.controllers.StudentValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Comparator;
@@ -18,12 +20,14 @@ public class StudentController {
 
     private final StudentRepository studentRepository;
     private final InstituteRepository instituteRepository;
+    private final StudentValidator studentValidator;
 
     @Autowired
-    public StudentController(StudentRepository studentRepository, InstituteRepository instituteRepository) {
+    public StudentController(StudentRepository studentRepository, InstituteRepository instituteRepository, StudentValidator studentValidator) {
         this.studentRepository = studentRepository;
         this.instituteRepository = instituteRepository;
-    }
+        this.studentValidator = studentValidator;
+
 
     @GetMapping("/students")
     public String students(Model model,
@@ -86,6 +90,24 @@ public class StudentController {
         model.addAttribute("page_type", pageType);
         model.addAttribute("study_subjects", studySubjects);
         return "edit_student";
+    }
+
+    @PostMapping("/student/new")
+    public String createStudent(@ModelAttribute("student") Student student, BindingResult result, Model model) {
+        studentValidator.validate(student, result);
+
+        if (result.hasErrors()) {
+            model.addAttribute("message_type", "error");
+            model.addAttribute("message", "Fehler beim Erstellen des Studenten. Bitte überprüfen Sie Ihre Eingaben.");
+            return setupStudentForm(null, model, "new");
+        }
+
+        studentRepository.save(student);
+        model.addAttribute("message_type", "success");
+        model.addAttribute("message", "Student erfolgreich erstellt.");
+
+        return setupStudentForm(null, model, "new");
+        //return "redirect:/students";
     }
 
 }

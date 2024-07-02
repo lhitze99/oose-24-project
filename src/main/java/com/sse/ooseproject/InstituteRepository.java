@@ -10,5 +10,7 @@ import java.util.List;
 public interface InstituteRepository extends JpaRepository<Institute, Long> {
 
     List<Institute> findByName(String name);
+    List<Institute> findByProvidesStudySubject(String studySubject);
+
 
 }
