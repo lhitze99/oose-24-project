@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <title>Klipsias</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="/bulma.min.css">
+    <link rel="stylesheet" href="/custom.css">
+</head>
+<body>
+    <nav th:replace="~{general.html :: navbar}"></nav>
+
+    <div class="columns is-fullheight">
+        <div th:replace="~{general.html :: sidebar}"></div>
+
+        <div class="column">
+            <div class="content p-4">
+                <h1>Einschreibung (<span th:text="${student.firstName + ' ' + student.lastName}"></span>)</h1>
+
+                <div class="tabs is-toggle">
+                    <ul>
+                        <li th:classappend="${semester == '2024 Spring' ? 'is-active' : ''}"><a th:href="@{/student/enroll(id=${student.id}, semester='2024 Spring')}">SoSe 2024</a></li>
+                        <li th:classappend="${semester == '2024 Fall' ? 'is-active' : ''}"><a th:href="@{/student/enroll(id=${student.id}, semester='2024 Fall')}">WiSe 2024/25</a></li>
+                        <li th:classappend="${semester == '2025 Spring' ? 'is-active' : ''}"><a th:href="@{/student/enroll(id=${student.id}, semester='2025 Spring')}">SoSe 2025</a></li>
+                        <li th:classappend="${semester == '2025 Fall' ? 'is-active' : ''}"><a th:href="@{/student/enroll(id=${student.id}, semester='2025 Fall')}">WiSe 2025/26</a></li>
+                    </ul>
+                </div>
+
+                <div class="container is-fluid">
+                    <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Kurs</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="enrollment: ${enrollments}">
+                            <td th:text="${enrollment.course.name}" />
+                            <td>
+                                <div class="buttons has-addons">
+                                    <a class="button is-small" th:href="@{/enrollment/delete(student_id=${student.id}, course_id=${enrollment.course.id}, semester=${semester})}">Entfernen</a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <form action="#" th:action="@{/enrollment/enroll}" method="get">
+                                <td>
+                                    <div class="control">
+                                        <div class="select">
+                                            <input type="hidden" name="student_id" th:value="${student.id}" />
+                                            <input type="hidden" name="semester" th:value="${semester}" />
+                                            <select name="course_id">
+                                                <option th:each="course: ${courses}" th:value="${course.id}" th:text="${course.name}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="buttons has-addons">
+                                        <input type="submit" class="button is-small" value="Einschreiben" />
+                                    </div>
+                                </td>
+                            </form>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

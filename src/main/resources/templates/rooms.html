@@ -47,12 +47,12 @@
                                 </span>
                             </th>
                             <th>
-                                <span th:if="${sort_by == 'is_auditorium'}">
+                                <span th:if="${sort_by == 'isAuditorium'}">
                                     <span th:if="${sort_asc}">↑</span><span th:unless="${sort_asc}">↓</span>
                                 </span>
-                                <span th:style="${sort_by == 'is_auditorium' ? 'text-decoration: underline;' : ''}">
-                                    <a th:if="${sort_by == 'is_auditorium'}" th:href="@{/rooms(sort_by='is_auditorium',sort_asc=${!sort_asc})}">Hörsaal?</a>
-                                    <a th:if="${sort_by != 'is_auditorium'}" th:href="@{/rooms(sort_by='is_auditorium',sort_asc='true')}">Hörsaal?</a>
+                                <span th:style="${sort_by == 'isAuditorium' ? 'text-decoration: underline;' : ''}">
+                                    <a th:if="${sort_by == 'isAuditorium'}" th:href="@{/rooms(sort_by='isAuditorium',sort_asc=${!sort_asc})}">Hörsaal?</a>
+                                    <a th:if="${sort_by != 'isAuditorium'}" th:href="@{/rooms(sort_by='isAuditorium',sort_asc='true')}">Hörsaal?</a>
                                 </span>
                             </th>
                             <th>
@@ -71,7 +71,7 @@
                             <td th:text="${room.id}" />
                             <td th:text="${room.number}" />
                             <td th:text="${room.seats}" />
-                            <td th:text="${room.is_auditorium}"></td>
+                            <td th:text="${room.isAuditorium}"></td>
                             <td th:text="${room.building.name}"></td>
                         </tr>
                     </tbody>
