@@ -6,26 +6,36 @@ import jakarta.persistence.*;
 @Table(name = "enrollment")
 public class Enrollment {
 
-    @jakarta.persistence.Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @EmbeddedId
+    private EnrollmentId id;
 
     private String semester;
 
     @ManyToOne
+    @MapsId("course_id")
     @JoinColumn(name = "course_id")
     private Course course;
 
     @ManyToOne
+    @MapsId("student_id")
     @JoinColumn(name = "student_id")
     private Student student;
 
+    // Default constructor
+    public Enrollment() {}
 
-    public Long getId() {
+    // Constructor
+    public Enrollment(EnrollmentId id, String semester) {
+        this.id = id;
+        this.semester = semester;
+    }
+
+    // Getters and Setters
+    public EnrollmentId getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(EnrollmentId id) {
         this.id = id;
     }
 
