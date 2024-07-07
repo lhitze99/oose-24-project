@@ -19,7 +19,6 @@ public class CourseController {
     @Autowired
     public CourseController(CourseRepository courseRepository) {
         this.courseRepository = courseRepository;
-
     }
 
     @GetMapping("/courses")
@@ -35,9 +34,11 @@ public class CourseController {
             case "name":
                 comparator = Comparator.comparing(Course::getName);
                 break;
-                // more if needed
+            case "chair":
+                comparator = Comparator.comparing(course -> course.getChair().getName());
+                break;
             default:
-                comparator = Comparator.comparing(Course::getName);
+                comparator = Comparator.comparing(Course::getId);
                 break;
         }
 
@@ -53,7 +54,6 @@ public class CourseController {
         model.addAttribute("sort_by", sortBy);
         model.addAttribute("sort_asc", sortAsc);
 
-        // Returning the name of a view (found in resources/templates) as a string lets this endpoint return that view.
         return "courses";
     }
 }

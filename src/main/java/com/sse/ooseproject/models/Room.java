@@ -14,7 +14,7 @@ public class Room {
 
     private String number;
     private int seats;
-    private boolean is_auditorium;
+    private boolean isAuditorium;
 
     @ManyToOne
     @JoinColumn(name = "building_id")
@@ -47,12 +47,10 @@ public class Room {
         this.seats = seats;
     }
 
-    public boolean is_auditorium() {
-        return is_auditorium;
-    }
+    public boolean getIsAuditorium() { return isAuditorium; }
 
-    public void set_auditorium(boolean auditorium) {
-        is_auditorium = auditorium;
+    public void setAuditorium(boolean auditorium) {
+        isAuditorium = auditorium;
     }
 
     public Building getBuilding() {

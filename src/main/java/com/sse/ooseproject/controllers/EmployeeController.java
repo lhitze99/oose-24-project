@@ -34,14 +34,14 @@ public class EmployeeController {
             case "firstName":
                 comparator = Comparator.comparing(Employee::getFirstName);
                 break;
-            case "staffNr":
-                comparator = Comparator.comparing(Employee::getStaffNr);
+            case "lastName":
+                comparator = Comparator.comparing(Employee::getLastName);
                 break;
             case "isProfessor":
                 comparator = Comparator.comparing(Employee::isProfessor);
                 break;
             default:
-                comparator = Comparator.comparing(Employee::getLastName);
+                comparator = Comparator.comparing(Employee::getStaffNr);
                 break;
         }
 
@@ -57,7 +57,6 @@ public class EmployeeController {
         model.addAttribute("sort_by", sortBy);
         model.addAttribute("sort_asc", sortAsc);
 
-        // Returning the name of a view (found in resources/templates) as a string lets this endpoint return that view.
         return "employees";
     }
 }

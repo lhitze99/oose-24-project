@@ -42,14 +42,14 @@ public class StudentController {
                 case "firstName":
                     comparator = Comparator.comparing(Student::getFirstName);
                     break;
-                case "matNr":
-                    comparator = Comparator.comparing(Student::getMatNr);
+                case "lastName":
+                    comparator = Comparator.comparing(Student::getLastName);
                     break;
                 case "studySubject":
                     comparator = Comparator.comparing(Student::getStudySubject);
                     break;
                 default:
-                    comparator = Comparator.comparing(Student::getLastName);
+                    comparator = Comparator.comparing(Student::getMatNr);
                     break;
             }
 
@@ -65,7 +65,6 @@ public class StudentController {
             model.addAttribute("sort_by", sortBy);
             model.addAttribute("sort_asc", sortAsc);
 
-            // Returning the name of a view (found in resources/templates) as a string lets this endpoint return that view.
             return "students";
         }
 
