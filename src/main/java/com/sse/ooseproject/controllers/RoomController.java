@@ -36,6 +36,12 @@ public class RoomController {
             case "seats":
                 comparator = Comparator.comparing(Room::getSeats);
                 break;
+            case "isAuditorium":
+                comparator = Comparator.comparing(Room::getIsAuditorium);
+                break;
+            case "building":
+                comparator = Comparator.comparing(room -> room.getBuilding().getName());
+                break;
             default:
                 comparator = Comparator.comparing(Room::getNumber);
                 break;
