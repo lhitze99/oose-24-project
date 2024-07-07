@@ -9,6 +9,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import java.util.regex.Pattern;
+import java.util.Optional;
 
 
 @Component
@@ -54,9 +55,12 @@ public class StudentValidator implements Validator{
             errors.rejectValue("email", "Email");
         }
 
-        // Check if matriculation number already exists
-        if (student.getMatNr() != null && studentRepository.findByMatNr(student.getMatNr()).isPresent()) {
-            errors.rejectValue("matNr", "Duplicate.student.matNr");
+        // Check if matriculation number already exists (only if it has changed)
+        if (student.getMatNr() != null) {
+            Optional<Student> existingStudent = studentRepository.findByMatNr(student.getMatNr());
+            if (existingStudent.isPresent() && !Long.valueOf(existingStudent.get().getId()).equals(student.getId())) {
+                errors.rejectValue("matNr", "Duplicate.student.matNr");
+            }
         }
 
         // Check if the study subject exists

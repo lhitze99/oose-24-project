@@ -31,8 +31,8 @@ public class StudentController {
 
         @GetMapping("/students")
         public String students (Model model,
-                @RequestParam(value = "sort_by", defaultValue = "lastName") String sortBy,
-        @RequestParam(value = "sort_asc", defaultValue = "true") boolean sortAsc){
+                                @RequestParam(value = "sort_by", defaultValue = "lastName") String sortBy,
+                                @RequestParam(value = "sort_asc", defaultValue = "true") boolean sortAsc){
 
 
             List<Student> students = studentRepository.findAll();
@@ -108,6 +108,25 @@ public class StudentController {
 
             return setupStudentForm(null, model, "new");
             //return "redirect:/students";
+        }
+
+        @PostMapping("/student/edit")
+        public String updateStudent(@ModelAttribute("student") Student student,
+                                    BindingResult bindingResult, Model model) {
+
+        studentValidator.validate(student, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("message_type", "error");
+            model.addAttribute("message", "Fehler beim Bearbeiten des Studenten. Bitte überprüfen Sie Ihre Eingaben.");
+            return setupStudentForm(student.getId(), model, "edit");
+        }
+
+        studentRepository.save(student);
+        model.addAttribute("message_type", "success");
+        model.addAttribute("message", "Student erfolgreich bearbeitet.");
+
+        return "redirect:/students";
         }
 
     }
