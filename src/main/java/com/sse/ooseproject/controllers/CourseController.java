@@ -1,7 +1,6 @@
 package com.sse.ooseproject.controllers;
 
 import com.sse.ooseproject.CourseRepository;
-import com.sse.ooseproject.InstituteRepository;
 import com.sse.ooseproject.models.Course;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
