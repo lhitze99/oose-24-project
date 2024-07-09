@@ -1,10 +1,15 @@
 package com.sse.ooseproject.controllers;
 
 import com.sse.ooseproject.StudentRepository;
+import com.sse.ooseproject.models.EnrollmentId;
 import com.sse.ooseproject.models.Student;
 import com.sse.ooseproject.models.Institute;
 import com.sse.ooseproject.InstituteRepository;
 import com.sse.ooseproject.controllers.StudentValidator;
+import com.sse.ooseproject.EnrollmentRepository;
+import com.sse.ooseproject.CourseRepository;
+import com.sse.ooseproject.models.Enrollment;
+import com.sse.ooseproject.models.Course;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,12 +26,20 @@ public class StudentController {
     private final StudentRepository studentRepository;
     private final InstituteRepository instituteRepository;
     private final StudentValidator studentValidator;
+    private final EnrollmentRepository enrollmentRepository;
+    private final CourseRepository courseRepository;
 
     @Autowired
-    public StudentController(StudentRepository studentRepository, InstituteRepository instituteRepository, StudentValidator studentValidator) {
+    public StudentController(StudentRepository studentRepository,
+                             InstituteRepository instituteRepository,
+                             StudentValidator studentValidator,
+                             EnrollmentRepository enrollmentRepository,
+                             CourseRepository courseRepository) {
         this.studentRepository = studentRepository;
         this.instituteRepository = instituteRepository;
         this.studentValidator = studentValidator;
+        this.enrollmentRepository = enrollmentRepository;
+        this.courseRepository = courseRepository;
     }
 
         @GetMapping("/students")
@@ -91,6 +104,31 @@ public class StudentController {
             return "edit_student";
         }
 
+        @GetMapping("/student/enroll")
+        public String enrollStudent (@RequestParam("id") Long studentId,
+                                     @RequestParam(value = "semester", defaultValue = "2024 Spring") String semester,
+                                     Model model) {
+
+            return setupEnrollment(studentId, semester, model);
+        }
+
+        private String setupEnrollment (Long studentId, String semester, Model model) {
+            Student student = studentRepository.findById(studentId).orElse(null);
+
+            List<Enrollment> enrollments = student.getEnrollments()
+                    .stream()
+                    .filter(enrollment -> enrollment.getSemester().equals(semester))
+                    .collect(Collectors.toList());
+            List<Course> availableCourses = courseRepository.findAll();
+
+            model.addAttribute("student", student);
+            model.addAttribute("enrollments", enrollments);
+            model.addAttribute("semester", semester);
+            model.addAttribute("courses", availableCourses);
+
+            return "enrollment";
+        }
+
         @PostMapping("/student/new")
         public String createStudent (@ModelAttribute("student") Student student, BindingResult result, Model model){
             studentValidator.validate(student, result);
@@ -127,5 +165,34 @@ public class StudentController {
 
         return "redirect:/students";
         }
+
+        @GetMapping("/enrollment/enroll")
+        public String enrollEnrollment (@RequestParam("student_id") Long studentId,
+                                        @RequestParam("semester") String semester,
+                                        @RequestParam("course_id") Long courseId,
+                                        Model model) {
+
+            Student student = studentRepository.findById(studentId).orElse(null);
+            Course course = courseRepository.findById(courseId).orElse(null);
+
+            EnrollmentId enrollmentId = new EnrollmentId(course, student);
+            Enrollment enrollment = new Enrollment(enrollmentId, semester);
+            enrollment.setCourse(course);
+            enrollment.setStudent(student);
+            enrollmentRepository.save(enrollment);
+
+            return setupEnrollment(studentId, semester, model);
+        }
+
+        @GetMapping("/enrollment/delete")
+        public String deleteEnrollment( @RequestParam("student_id") Long studentId,
+                                        @RequestParam("semester") String semester,
+                                        @RequestParam("course_id") Long courseId,
+                                        Model model) {
+
+        enrollmentRepository.deleteEnrollment(studentId, courseId, semester);
+
+        return setupEnrollment(studentId, semester, model);
+    }
 
     }
